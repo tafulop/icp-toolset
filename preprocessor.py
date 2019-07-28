@@ -17,9 +17,10 @@ def perform_transform(pc, tf):
     copy_pc = pc.copy()
     for row  in range(0,len(pc.index)):
 	# create vector from coordinates
-	point_vector = np.matrix([[copy_pc.at[row,'x']],[copy_pc.at[row,'y']],[copy_pc.at[row,'z']]])
-	print(point_vector)
+	point_vector = np.matrix([[copy_pc.at[row,'x']],[copy_pc.at[row,'y']],[copy_pc.at[row,'z']],[1]])
 	transformed = tf * point_vector
+	print("-------------------------")
+	print(str(tf) + "\n \t* \n" + str(point_vector) + "\n\t=\n" + str(transformed))
 	copy_pc.at[row,'x'] = transformed[0]
         copy_pc.at[row,'y'] = transformed[1]
 	copy_pc.at[row,'z'] = transformed[2]
@@ -44,13 +45,17 @@ file = str(os.path.abspath(sys.argv[1]))
 print("reading file: " + file)
 points = read_points(file)
 
-tf = np.matrix("1.2,0,0; 0,1,0; 0,0,1")
+tf = np.matrix(	"1,0,0,5;\
+		 0,1,0,0;\
+		 0,0,1,0;\
+		 0,0,0,1")
 transformed = perform_transform(points, tf)
 noise_points = add_noise(transformed)
 
 # saving Tf + noisy file
 points.to_csv("input.csv", index=False)
-noise_points.to_csv("output.csv", index=False)
+transformed.to_csv("input_tf.csv", index=False)
+noise_points.to_csv("input_tf_noise.csv", index=False)
 
 # make them visualizable
 pc_vis_1 = convert_visualizable(points)
