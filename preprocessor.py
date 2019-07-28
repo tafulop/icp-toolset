@@ -48,6 +48,10 @@ tf = np.matrix("1.2,0,0; 0,1,0; 0,0,1")
 transformed = perform_transform(points, tf)
 noise_points = add_noise(transformed)
 
+# saving Tf + noisy file
+points.to_csv("input.csv", index=False)
+noise_points.to_csv("output.csv", index=False)
+
 # make them visualizable
 pc_vis_1 = convert_visualizable(points)
 pc_vis_2 = convert_visualizable(noise_points)
