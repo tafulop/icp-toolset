@@ -1,16 +1,26 @@
 import numpy as np
-import pptk
 import pandas as pd
 import sys
 import os
 from random import gauss
 
-def read_points(f):
-	# reads Semantic3D .txt file f into a pandas dataframe
-	col_names = ['time','intensity','id','x', 'y', 'z', 'azimuth','range','pid']
-	# col_names = ['x','y','z']
+# read the pointcloud file
+# must contain 'x,y,z' columns
+def read_points(f, columns):
 	col_dtype = {'x': np.float32, 'y': np.float32, 'z': np.float32}
-	return pd.read_csv(f, header=0, sep=",", names=col_names, dtype=col_dtype)
+	return pd.read_csv(f, header=0, sep=",", names=columns, dtype=col_dtype)
+
+def shrink_data(pc, keep_ratio = 0.8):
+	shrink_pc = pd.DataFrame()
+	items_to_remove = len(pc.index) / (len(pc.index) * (1 - keep_ratio))
+	for row in range(0,len(pc.index)):
+		if(row % int(items_to_remove)):   
+			shrink_pc.at[row,'x'] = pc.at[row,'x']
+			shrink_pc.at[row,'y'] = pc.at[row,'y']
+			shrink_pc.at[row,'z'] = pc.at[row,'z']
+	print("original dataset elements: " + str(len(pc.index)))
+	print("shrunk dataset elements:   " + str(len(shrink_pc.index)))
+	return shrink_pc
 
 # Performs a transformation on the pointcloud
 def perform_transform(pc, tf):
@@ -19,8 +29,6 @@ def perform_transform(pc, tf):
 	# create vector from coordinates
 		point_vector = np.matrix([[copy_pc.at[row,'x']],[copy_pc.at[row,'y']],[copy_pc.at[row,'z']],[1]])
 		transformed = tf * point_vector
-		print("-------------------------")
-		print(str(tf) + "\n \t* \n" + str(point_vector) + "\n\t=\n" + str(transformed))
 		copy_pc.at[row,'x'] = transformed[0]
 		copy_pc.at[row,'y'] = transformed[1]
 		copy_pc.at[row,'z'] = transformed[2]
@@ -31,43 +39,25 @@ def perform_transform(pc, tf):
 def add_noise(pc, mu=0, sigma=0.1):
 	copy_pc = pc.copy()
 	for row in range(1,len(pc.index)):
-	#print("x: " + str(pc.at[row, 'x']) + "\ty: " + str(pc.at[row, 'y']) + "\tz: " + str(pc.at[row, 'z'])) 
 		copy_pc.at[row,'x'] = copy_pc.at[row,'x'] + gauss(mu, sigma)  
 		copy_pc.at[row,'y'] = copy_pc.at[row,'y'] + gauss(mu, sigma)
 		copy_pc.at[row,'z'] = copy_pc.at[row,'z'] + gauss(mu, sigma)
 	return copy_pc
 
-def convert_visualizable(pc):
-	filtered = pc.drop(columns=['time','intensity','id', 'azimuth','range','pid'])
-	return filtered
+# user inputs
+columns = ['time','intensity','id','x', 'y', 'z', 'azimuth','range','pid']
+file = sys.argv[1]
+tf = np.matrix(	"1,0,0,5; 0,1,0,0; 0,0,1,0; 0,0,0,1")
+mu = 0
+sigma = 0.5
 
-file = str(os.path.abspath(sys.argv[1]))
-print("reading file: " + file)
-points = read_points(file)
+# perform calcuations
+pc = read_points(file, columns)
+pc_s = shrink_data(pc, 0.8)
+print(pc_s)
+pc_tf = perform_transform(pc_s, tf)
+pc_tf_n = add_noise(pc_tf, mu, sigma)
 
-tf = np.matrix(	"1,0,0,5;\
-		 0,1,0,0;\
-		 0,0,1,0;\
-		 0,0,0,1")
-transformed = perform_transform(points, tf)
-noise_points = add_noise(transformed)
-
-# saving Tf + noisy file
-points.to_csv("input.csv", index=False)
-transformed.to_csv("input_tf.csv", index=False)
-noise_points.to_csv("input_tf_noise.csv", index=False)
-
-# make them visualizable
-pc_vis_1 = convert_visualizable(points)
-pc_vis_2 = convert_visualizable(noise_points)
-
-# combine two pointcoulds
-combined = pd.concat([pc_vis_1, pc_vis_2])
-v_c = pptk.viewer(combined) 
-v_c.set(point_size=0.01)
-
-# add colors
-color_1 = [1,1,1]
-color_2 = [0.11982556, 0.80928971, 0.082647]
-colors = [color_1] * (len(combined.index)/2) + [color_2] * (len(combined.index)/2) 
-v_c.attributes(colors)
+# save results
+pc_tf.to_csv("output_transformed.csv", index=False)
+pc_tf_n.to_csv("output_transformed_noised.csv", index=False)
