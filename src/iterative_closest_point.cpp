@@ -9,6 +9,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr read_csv_data(std::string file)
 {
   // read input data
   io::CSVReader<3> in(file);
+  in.read_header(io::ignore_extra_column, "x", "y", "z");
   float x,y,z;
   pcl::PointCloud<pcl::PointXYZ>::Ptr pc (new pcl::PointCloud<pcl::PointXYZ>);
   while(in.read_row(x,y,z)){
