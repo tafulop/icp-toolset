@@ -54,7 +54,7 @@ User defined parameters (at the moment inside the script):
 Sample:
 ![alt text](https://github.com/tafulop/ipc-toolset/blob/master/meta/Screenshot%202019-08-04%20at%2009.03.08.png?raw=true "Visualization")
 
-## 3. Run IPC 
+## 3. Run icp tool
 
 This tool uses the PCL C++ library to compute the transformation between the original and the generated pointclouds. Use the provided docker image to run the tool by executing:
 
