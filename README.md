@@ -1,5 +1,5 @@
-# ipc-tool
-A toolset to make you able to work with pointclouds and perform an IPC on them.
+# icp-tool
+A toolset to make you able to work with pointclouds and perform an iterative closest point algorithm on them.
 
 # The toolset was tested based on
 Sydney Urban Objects Dataset
@@ -22,7 +22,7 @@ If you would like to set up your own environment, here are the dependencies:
 * libpcl-dev 1.7
 
 ### Docker image
-https://drive.google.com/file/d/1YBTRVvUZY8VTySLTVPfnSnwRc-yXTs9l/view?usp=sharing
+https://drive.google.com/file/d/1BTBZcGvzARoNZf0fc_SFsqn2ub9U8g9W/view?usp=sharing
 
 ## 1. Prepare the data with preprocessor.py
 
