@@ -104,7 +104,7 @@ pc_tf_n = add_noise(pc_tf, mu, sigma)
 
 # save results
 save_outputs({	original_output_file : pc,
-				original_output_file + "_recuded" : drop_extra_columns(pc, cols_in_reduced),
+				original_output_file + "_reduced" : drop_extra_columns(pc, cols_in_reduced),
 				transformed_output_file : pc_tf,
 				transformed_output_file + "_reduced" : drop_extra_columns(pc_tf, cols_in_reduced),
 			  	noised_transformed_output_file : pc_tf_n,
