@@ -51,8 +51,15 @@ User defined parameters (at the moment inside the script):
 * columns: name of the columns in the input files, eg. ['time','intensity','id','x', 'y', 'z', 'azimuth','range','pid'] with the Syndey Dataset
 * color_1, color_2: the color of the points in the two pointclouds encoded in RGB
 
-## 3. Rung IPC 
+Sample:
+![alt text](https://github.com/tafulop/ipc-toolset/blob/master/meta/Screenshot%202019-08-04%20at%2009.03.08.png?raw=true "Visualization")
+
+## 3. Run IPC 
+
+This tool uses the PCL C++ library to compute the transformation between the original and the generated pointclouds. Use the provided docker image to run the tool by executing:
 
 ```bash
 iterative_point_cloud <original.csv> <generated.csv>
 ```
+
+The input files could be easily added to the docker container by the 'docker cp' command. See https://docs.docker.com/engine/reference/commandline/cp/
