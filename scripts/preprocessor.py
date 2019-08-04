@@ -82,7 +82,7 @@ def save_outputs(file_dict):
 	print("saving results")
 	print("-" * 50)
 	for file, data in file_dict.items(): 
-		data.to_csv(file, index=False)
+		data.to_csv(file + ".csv", index=False)
 		print("saved '" + file + "' with data:\n\n" + str(data))
 
 # user inputs
@@ -91,16 +91,18 @@ file = sys.argv[1]
 tf = np.matrix(	"1,0,0,0; 0,1,0,7; 0,0,1,0; 0,0,0,1")
 mu = 0
 sigma = 0.05
-transformed_output_file = "output_transformed.csv"
-noised_transformed_output_file = "output_transformed_noised.csv"
+transformed_output_file = "output_transformed"
+noised_transformed_output_file = "output_transformed_noised"
+cols_in_reduced = ['x','y','z']
 
 # perform calcuations
 pc = read_points(file, columns)
-pc_red = drop_extra_columns(pc, ['x','y','z'])
-pc_s = shrink_data(pc_red, 0.8)
+pc_s = shrink_data(pc, 0.8)
 pc_tf = perform_transform(pc_s, tf)
 pc_tf_n = add_noise(pc_tf, mu, sigma)
 
 # save results
-save_outputs({transformed_output_file : pc_tf, 
-			  noised_transformed_output_file : pc_tf_n})
+save_outputs({	transformed_output_file : pc_tf,
+				transformed_output_file + "_reduced" : drop_extra_columns(pc_tf, cols_in_reduced),
+			  	noised_transformed_output_file : pc_tf_n,
+				noised_transformed_output_file + "_reduced" : drop_extra_columns(pc_tf_n, cols_in_reduced)	})
