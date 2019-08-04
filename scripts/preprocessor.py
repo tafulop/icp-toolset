@@ -17,6 +17,16 @@ def read_points(f, columns):
 	print("data:\n\n" + str(input))
 	return input
 
+# remove extra columns
+def drop_extra_columns(data, cols_to_keep):
+	print("-" * 50)
+	print("dropping extra columns from data")
+	print("-" * 50)
+	print("keeping: ", cols_to_keep)
+	filtered = data.filter(items=cols_to_keep)
+	print(filtered)
+	return filtered
+
 # removes items from the dataset and keeping the given ratio
 # items removed in a sequential way based on the index
 def shrink_data(pc, keep_ratio = 0.8):
@@ -86,7 +96,8 @@ noised_transformed_output_file = "output_transformed_noised.csv"
 
 # perform calcuations
 pc = read_points(file, columns)
-pc_s = shrink_data(pc, 0.8)
+pc_red = drop_extra_columns(pc, ['x','y','z'])
+pc_s = shrink_data(pc_red, 0.8)
 pc_tf = perform_transform(pc_s, tf)
 pc_tf_n = add_noise(pc_tf, mu, sigma)
 
