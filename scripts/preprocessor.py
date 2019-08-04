@@ -91,6 +91,7 @@ file = sys.argv[1]
 tf = np.matrix(	"1,0,0,0; 0,1,0,7; 0,0,1,0; 0,0,0,1")
 mu = 0
 sigma = 0.05
+original_output_file = "output_original"
 transformed_output_file = "output_transformed"
 noised_transformed_output_file = "output_transformed_noised"
 cols_in_reduced = ['x','y','z']
@@ -102,7 +103,9 @@ pc_tf = perform_transform(pc_s, tf)
 pc_tf_n = add_noise(pc_tf, mu, sigma)
 
 # save results
-save_outputs({	transformed_output_file : pc_tf,
+save_outputs({	original_output_file : pc,
+				original_output_file + "_recuded" : drop_extra_columns(pc, cols_in_reduced),
+				transformed_output_file : pc_tf,
 				transformed_output_file + "_reduced" : drop_extra_columns(pc_tf, cols_in_reduced),
 			  	noised_transformed_output_file : pc_tf_n,
 				noised_transformed_output_file + "_reduced" : drop_extra_columns(pc_tf_n, cols_in_reduced)	})
