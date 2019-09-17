@@ -13,8 +13,8 @@ If you would like to set up your own environment, here are the dependencies:
 
 ### Python 3.6 with the following modules:
 * numpy
-* import pptk
-* import pandas
+* pptk
+* pandas
 
 ### To build 
 * CMake 3.5.1
